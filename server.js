@@ -24,6 +24,12 @@ io.on('connection', (socket) => {
 
     socket.on('setUniqueId', (uniqueId, options) => {
 
+        // Ignore duplicate requests from the same socket if a wrapper already exists
+        if (tiktokConnectionWrapper) {
+            console.info('setUniqueId ignored: wrapper already exists for this socket');
+            return;
+        }
+
         // Prohibit the client from specifying these options (for security reasons)
         if (typeof options === 'object' && options) {
             delete options.requestOptions;
